@@ -1,2 +1,2 @@
 # EasyDeployer
-Simple tool for software distribution
+Simple tool for software distribution for entreprises
