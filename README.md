@@ -19,7 +19,7 @@ How to use
 5. START A SERVICE
 6. STOP A SERVICE
 
-4-For the first time run , you have to install the easydeployer service (that you have compiled from the folder https://github.com/BENSEBTI/EasyDeployer/tree/master/EasyDeployer).(for this step you must install the service one by one , we are automating that, drop me a mail if you want the automatic one )
+4-For the first time run , you have to install the easydeployer service (that you have compiled from the folder https://github.com/BENSEBTI/EasyDeployer/tree/master/EasyDeployer  ).  (for this step you must install the service one by one , we are automating that, drop me a mail if you want the automatic one )
 *the easydeployer service must be in a shared accessible folder 
 
 5- After making sure that the easydeployer service is installed on the computers (you can verify that by executing ENNUMERATE SERVICES on those computers to make sure ).
