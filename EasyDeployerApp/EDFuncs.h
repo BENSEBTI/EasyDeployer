@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <atlstr.h> 
+#include <mutex>
 
 
 class ringo {
@@ -39,5 +40,7 @@ public:
 	VOID __stdcall ringo::DoDeleteSvc(SC_HANDLE handler, std::wstring svname);
 
 	BOOL __stdcall StopDependentServices(SC_HANDLE svhandler, SC_HANDLE handler);
+
+	void logger(LPTSTR pipenamepath,LPTSTR finalpath, TCHAR * returncode);
 
 };

@@ -2,6 +2,7 @@
 
 #include "EDFuncs.h"
 
+#define RCVBUFFER 50 
 // This function create an complete installation path that will be sent to the Packageinstaller function and finaly sent throught pipe .
 
 LPTSTR ringo::pathConstructor(std::string apppath, std::string command, int type) {
@@ -14,7 +15,7 @@ LPTSTR ringo::pathConstructor(std::string apppath, std::string command, int type
 
 	case 1:
 
-		constructed = apppath + " -S";// getback to this **** constructed = apppath + command;
+		constructed = apppath + " -ms";// getback to this **** constructed = apppath + command;
 
 		_tcscpy_s(finalpath, CA2T(constructed.c_str()));
 
@@ -155,7 +156,7 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 		fSuccess = ReadFile(
 			hPipe,    // pipe handle 
 			chBuf,    // buffer to receive reply 
-			sizeof(TCHAR),  // size of buffer 
+			RCVBUFFER,  // size of buffer 
 			&cbRead,  // number of bytes read 
 			NULL);    // not overlapped 
 
@@ -169,12 +170,15 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 		_tprintf(TEXT("ReadFile from pipe failed. GLE=%d\n"), GetLastError());
 		return -1;
 	}
+	//Log what happened
+	logger(finalpipename, aplicationpath, chBuf);
 
 	//printf("\n<Thread ended click enter>");
 	//_getch();
 	Sleep(5000);
 	CloseHandle(hPipe);
 	printf("\n<Thread ended>");
+	Sleep(5000);
 	return 0;
 
 }
@@ -730,5 +734,25 @@ ENUM_SERVICE_STATUS * ringo::enummeration(SC_HANDLE handler) {
 			break;
 		}
 	}
+
+}
+
+void ringo::logger(LPTSTR pipenamepath, LPTSTR finalpath, TCHAR * returncode) {
+	
+	std::wstring pipen = pipenamepath;
+	std::wstring finalp = finalpath;
+	time_t t = time(0);
+	tm* localtm = localtime(&t);
+
+	std::mutex mtx;
+	mtx.lock();
+	std::wofstream myfile;
+
+	myfile.open("Easylogging.txt", std::ios::app);
+
+	myfile << pipen << ";" << finalp << ";" << *returncode << ";" << asctime(localtm) <<"\n";
+
+	mtx.unlock();
+	return;
 
 }

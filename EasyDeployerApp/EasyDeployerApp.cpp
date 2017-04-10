@@ -17,12 +17,12 @@ std::string servicename;
 std::string servicepath;
 std::string networkaccess = "\\\\";
 std::string pipe = "\\pipe\\easydeployer";
-std::string pipename;
 std::string apppath;
-std::string command = "";
-
+std::string command = "";  
+std::string pipename;
 std::string line;
 std::ifstream computers;
+std::string computerfilepath;
 
 
 int installtype;
@@ -34,6 +34,7 @@ TCHAR ServiceLocation[500];
 TCHAR finalSvcname[sizeof(servicename)];
 TCHAR finalapppath[5000];
 TCHAR finalpipename[500];
+
 //#define PATHING L"\\\\*\\installations\\easydeployer.exe"
 //#define PATHING L"\\\\*\\install\\easydeployer.exe"
 #define SRVNAME L"easydeployer"
@@ -132,9 +133,9 @@ int main() {
 
 		case 4:
 
-			std::cout << "The computer name" << std::endl;
+			std::cout << "The computers file path" << std::endl;
 
-			std::cin >> computerName;
+			std::cin >> computerfilepath;
 
 			std::cout << "Application Path" << std::endl;
 
@@ -144,7 +145,7 @@ int main() {
 
 			std::cin >> installtype;
 			
-			computers.open("e:/computers.txt");
+			computers.open(computerfilepath);
 
 			if (computers.is_open()) {
 				while (std::getline(computers, line)) {
@@ -152,6 +153,10 @@ int main() {
 					(*CompArray).push_back(line);
 
 				}
+			}
+			else {
+				printf("Couldn't open file with error %d", GetLastError());
+				return 5;
 			}
 
 			for (std::size_t i = 0; i < (*CompArray).size(); i++) {
@@ -170,7 +175,7 @@ int main() {
 					return 15;
 
 				}
-				//(3000);
+				//Sleep(3000);
 			}
 
 			WaitForMultipleObjects((*CompArray).size(), hThreadArray, TRUE, INFINITE);
@@ -257,7 +262,7 @@ int main() {
 			CloseServiceHandle(svhandling);
 
 			CloseServiceHandle(scmanagerHandler);
-
+			
 			break;
 
 		default:
