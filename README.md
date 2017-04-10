@@ -1,9 +1,9 @@
 # EasyDeployer
 Simple tool for software distribution inside entreprises* in domain environment only.
 
-It operate in the same way as PsExec(sysinternal tools) , it pushed a service to the remote computer and it will started as system, then we communicate with the service via pipename ,sending msi, exe commands ... ect .
+It operate in the same way as PsExec(sysinternal tools) , it pushes a service to the remote computer then it will be started in system context, we communicate with it service via pipename (sending msi, exe commands ... ect).
 
-PsExec delete the service after the command execution , when easydeployer don't (it will be conserved for future use ), unless you want to (for that you can use option 6 and delete the service)
+PsExec delete the service after the command execution , when easydeployer don't (it will be conserved for future use ), unless you want too (for that you can use option 6 and delete the service).
 
 How to use 
 
@@ -19,7 +19,7 @@ How to use
 5. START A SERVICE
 6. STOP A SERVICE
 
-4-For the first time run , you have to install the easydeployer service (that you have compiled from the folder https://github.com/BENSEBTI/EasyDeployer/tree/master/EasyDeployer).(for this step you must install the service one by one , we are automating that, drop me a mail if you want the automating one )
+4-For the first time run , you have to install the easydeployer service (that you have compiled from the folder https://github.com/BENSEBTI/EasyDeployer/tree/master/EasyDeployer).(for this step you must install the service one by one , we are automating that, drop me a mail if you want the automatic one )
 *the easydeployer service must be in a shared accessible folder 
 
 5- After making sure that the easydeployer service is installed on the computers (you can verify that by executing ENNUMERATE SERVICES on those computers to make sure ).
