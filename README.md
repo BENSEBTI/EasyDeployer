@@ -8,8 +8,11 @@ PsExec delete the service after the command execution , when easydeployer don't 
 How to use 
 
 1-Create a File with all the computers name or ip adresses (you must be the domain administrator for those computers ).
+
 2-Create a read only shared folder that can be accessed by all authenticated users.
-3-Open the easydeployer app you will be see the following options 
+
+3-Open the easydeployer app you will see the following options .
+
  What do you want to do
 
 1. INSTALL EASYDEPLOYER SERVICE AND START IT
