@@ -28,6 +28,7 @@ How to use
 5- After making sure that the easydeployer service is installed on the computers (you can verify that by executing ENNUMERATE SERVICES on those computers to make sure ).
  - Choose 4. DEPLOY A SOFTWARE and provide the computers txt file , and the application path(with the command) , choose between exe and msi
  execute and wait :) .
+ 
 6-You'll find easylogging.txt file which provide you with the pipename, installation path,installation return code, timestamp .
  
  
