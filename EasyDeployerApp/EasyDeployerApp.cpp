@@ -6,7 +6,7 @@
 
 SC_HANDLE svhandling;
 SC_HANDLE scmanagerHandler;
-HANDLE  hThreadArray[12];
+HANDLE  hThreadArray[100]; // The limit for computers by txt file, which can be run simultaneously 
 DWORD threadid;
 ringo Helloo;
 ENUM_SERVICE_STATUS * lpservicing = NULL;
@@ -19,10 +19,11 @@ std::string networkaccess = "\\\\";
 std::string pipe = "\\pipe\\easydeployer";
 std::string apppath;
 std::string command = "";  
-std::string pipename;
 std::string line;
 std::ifstream computers;
 std::string computerfilepath;
+
+std::vector<std::string>CompArray;
 
 
 int installtype;
@@ -33,7 +34,7 @@ TCHAR finalname[sizeof(computerName)];
 TCHAR ServiceLocation[500];
 TCHAR finalSvcname[sizeof(servicename)];
 TCHAR finalapppath[5000];
-TCHAR finalpipename[500];
+
 
 //#define PATHING L"\\\\*\\installations\\easydeployer.exe"
 //#define PATHING L"\\\\*\\install\\easydeployer.exe"
@@ -44,8 +45,6 @@ TCHAR finalpipename[500];
 DWORD WINAPI InstallThread(LPVOID params);
 
 int main() {
-
-	std::unique_ptr<std::vector<std::string>> CompArray (new std::vector<std::string>);
 
 	while (1) {
 
@@ -150,21 +149,22 @@ int main() {
 			if (computers.is_open()) {
 				while (std::getline(computers, line)) {
 
-					(*CompArray).push_back(line);
+					CompArray.push_back(line);
 
 				}
 			}
 			else {
 				printf("Couldn't open file with error %d", GetLastError());
+				getch();
 				return 5;
 			}
 
-			for (std::size_t i = 0; i < (*CompArray).size(); i++) {
+			for (std::size_t i = 0; i < CompArray.size(); i++) {
 
 				hThreadArray[i] = CreateThread(NULL,
 					0,
 					InstallThread,
-					&(*CompArray)[i],
+					LPVOID(i),
 					0,
 					&threadid);
 
@@ -178,8 +178,8 @@ int main() {
 				//Sleep(3000);
 			}
 
-			WaitForMultipleObjects((*CompArray).size(), hThreadArray, TRUE, INFINITE);
-			return 12;
+			WaitForMultipleObjects(CompArray.size(), hThreadArray, TRUE, INFINITE);
+
 
 			break;
 			/*
@@ -244,7 +244,7 @@ int main() {
 			_tcscpy_s(finalname, CA2T(computerName.c_str()));
 
 			_tcscpy_s(finalSvcname, CA2T(servicename.c_str()));
-
+			
 			// Get a handle to the scm
 
 			scmanagerHandler = Helloo.scmOpen(finalname);
@@ -280,18 +280,17 @@ int main() {
     
 DWORD WINAPI InstallThread(LPVOID params) {
 
-	
-	std::string * compuname = (std::string*) params;
+	TCHAR finalpipename[500];
 
-	pipename = networkaccess + *compuname + pipe;
-
-	//std::cout << pipename << std::endl;
+	std::string pipename = networkaccess + CompArray[(int)params] + pipe;
 
 	_tcscpy_s(finalpipename, CA2T(pipename.c_str()));
 
 	finalpath = Helloo.pathConstructor(apppath, command, installtype);
 
 	Helloo.Packageinstaller(finalpipename, finalpath);
+
+	std::cout << pipename << std::endl;
 
 	
 	return 45 ;

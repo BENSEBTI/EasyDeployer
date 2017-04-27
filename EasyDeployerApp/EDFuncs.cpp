@@ -111,7 +111,7 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 		if (!WaitNamedPipe(lpszPipename, 20000))
 		{
 			printf("Could not open pipe: 20 second wait timed out.");
-			return -1;
+			return GetLastError();
 		}
 	}
 
@@ -126,7 +126,7 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 	if (!fSuccess)
 	{
 		_tprintf(TEXT("SetNamedPipeHandleState failed. GLE=%d\n"), GetLastError());
-		return -1;
+		return GetLastError();
 	}
 
 	// Send a message to the pipe server. 
@@ -144,7 +144,7 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 	if (!fSuccess)
 	{
 		_tprintf(TEXT("WriteFile to pipe failed. GLE=%d\n"), GetLastError());
-		return -1;
+		return GetLastError();
 	}
 
 	printf("\nMessage sent to server, receiving reply as follows:\n");
@@ -168,16 +168,17 @@ int ringo::Packageinstaller(LPTSTR finalpipename, LPTSTR aplicationpath) {
 	if (!fSuccess)
 	{
 		_tprintf(TEXT("ReadFile from pipe failed. GLE=%d\n"), GetLastError());
-		return -1;
+		return GetLastError();
 	}
 	//Log what happened
-	logger(finalpipename, aplicationpath, chBuf);
+	logger(lpszPipename, aplicationpath, chBuf);
 
 	//printf("\n<Thread ended click enter>");
 	//_getch();
 	Sleep(5000);
+
 	CloseHandle(hPipe);
-	printf("\n<Thread ended>");
+	printf("\n<Thread ended>\n");
 	Sleep(5000);
 	return 0;
 
@@ -738,14 +739,19 @@ ENUM_SERVICE_STATUS * ringo::enummeration(SC_HANDLE handler) {
 }
 
 void ringo::logger(LPTSTR pipenamepath, LPTSTR finalpath, TCHAR * returncode) {
-	
-	std::wstring pipen = pipenamepath;
-	std::wstring finalp = finalpath;
-	time_t t = time(0);
-	tm* localtm = localtime(&t);
 
 	std::mutex mtx;
+
 	mtx.lock();
+
+	std::wstring pipen = pipenamepath;
+
+	std::wstring finalp = finalpath;
+
+	time_t t = time(0);
+
+	tm* localtm = localtime(&t);
+
 	std::wofstream myfile;
 
 	myfile.open("Easylogging.txt", std::ios::app);
@@ -753,6 +759,7 @@ void ringo::logger(LPTSTR pipenamepath, LPTSTR finalpath, TCHAR * returncode) {
 	myfile << pipen << ";" << finalp << ";" << *returncode << ";" << asctime(localtm) <<"\n";
 
 	mtx.unlock();
+
 	return;
 
 }
